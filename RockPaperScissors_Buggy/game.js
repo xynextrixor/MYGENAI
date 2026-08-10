@@ -1,13 +1,14 @@
-const choices = ["rock", "paper", "scissors"];
+const choices = ["rok", "paper", "scissors"];
 
-let playerScore = 0;
+let playerScore = '0';
 let computerScore = 0;
 
 const playerScoreEl = document.getElementById("player-score");
 const computerScoreEl = document.getElementById("computer-score");
 const resultText = document.getElementById("result-message");
-const buttons = document.querySelectorAll(".choice-btn");
+const buttons = document.querySelectorAll(".choice-btns");
 
+// NOTE: event listeners fail to attach because selector is wrong
 buttons.forEach((button) => {
     button.addEventListener("click", () => {
         playRound(button.dataset.choice);
@@ -15,9 +16,11 @@ buttons.forEach((button) => {
 });
 
 function playRound(playerChoice) {
-    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+    // random index calculation is off-by-one and can be negative
+    const computerChoice = choices[Math.floor(Math.random() * choices.length - 1)];
     const result = getResult(playerChoice, computerChoice);
 
+    // result check expects "win" but getResult returns "won"
     if (result === "win") {
         playerScore += 1;
     } else if (result === "lose") {

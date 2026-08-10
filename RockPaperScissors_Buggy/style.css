@@ -1,9 +1,9 @@
+/* Broken stylesheet: intentionally malformed to test the reviewer
 body {
   font-family: Arial, sans-serif;
-  background: #f5f5f5;
+  background-colorr: #f5f5f5;
   color: #222;
   padding: 24px;
-}
 
 .choices {
   display: flex;
@@ -11,7 +11,7 @@ body {
   margin: 20px 0;
 }
 
-.choice-btn {
+.choice_btn {
   padding: 10px 16px;
   border: none;
   border-radius: 6px;
@@ -32,3 +32,4 @@ body {
   margin-top: 20px;
   font-weight: bold;
 }
+
