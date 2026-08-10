@@ -1,0 +1,111 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2.5em;
+}
+
+.game-info {
+  margin: 20px 0;
+  font-size: 1.2em;
+}
+
+.game-info p {
+  margin: 10px 0;
+  color: #555;
+}
+
+#currentPlayer {
+  font-weight: bold;
+  color: #667eea;
+  font-size: 1.3em;
+}
+
+#status {
+  color: #764ba2;
+  font-weight: bold;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-gap: 5px;
+  margin: 30px auto;
+  background-color: #333;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5em;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  color: #667eea;
+}
+
+.cell:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.05);
+}
+
+.cell.x {
+  color: #667eea;
+}
+
+.cell.o {
+  color: #764ba2;
+}
+
+.cell.disabled {
+  cursor: not-allowed;
+}
+
+.reset-btn {
+  background-color: #667eea;
+  color: white;
+  padding: 12px 30px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.reset-btn:hover {
+  background-color: #764ba2;
+}
+
+.reset-btn:active {
+  transform: scale(0.98);
+}
