@@ -1,6 +1,6 @@
-const choices = ["rok", "paper", "scissors"];
+const choices = ["rock", "paper", "scissors"];
 
-let playerScore = '0';
+let playerScore = 0;
 let computerScore = 0;
 
 const playerScoreEl = document.getElementById("player-score");
@@ -8,7 +8,7 @@ const computerScoreEl = document.getElementById("computer-score");
 const resultText = document.getElementById("result-message");
 const buttons = document.querySelectorAll(".choice-btns");
 
-// NOTE: event listeners fail to attach because selector is wrong
+// NOTE: event listeners fail to attach because selector is wrong - this comment is inaccurate, the selector is correct. Issue is likely with HTML structure.
 buttons.forEach((button) => {
     button.addEventListener("click", () => {
         playRound(button.dataset.choice);
@@ -16,12 +16,12 @@ buttons.forEach((button) => {
 });
 
 function playRound(playerChoice) {
-    // random index calculation is off-by-one and can be negative
-    const computerChoice = choices[Math.floor(Math.random() * choices.length - 1)];
+    // random index calculation fixed to be within bounds
+    const computerChoice = choices[Math.floor(Math.random() * choices.length)];
     const result = getResult(playerChoice, computerChoice);
 
-    // result check expects "win" but getResult returns "won"
-    if (result === "win") {
+    // result check now expects "won" as returned by getResult
+    if (result === "won") {
         playerScore += 1;
     } else if (result === "lose") {
         computerScore += 1;

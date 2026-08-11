@@ -1,14 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import "dotenv/config";
-import fs from "fs";
+import fs, { Utf8Stream } from "fs";
 import path from "path";
 
-// npm i fs
-//  npm i path
 
-// Check if API key is loaded
 if (!process.env.GEMINI_API_KEY) {
-  console.error("❌ Error: GEMINI_API_KEY not found in .env");
+  console.error(" Error: GEMINI_API_KEY not found in .env");
   console.error("Add GEMINI_API_KEY=your_key_here to .env file");
   process.exit(1);
 }
@@ -23,7 +20,7 @@ const ai = new GoogleGenAI({
 
 async function listFiles({ directory }) {
   const files = [];
-  const extensions = [".js", ".jsx", ".ts", ".tsx", ".html", ".css"];
+  const extensions = [".js", ".jsx", ".ts", ".tsx", ".html", ".css", ".md"];
 
   function scan(dir) {
     const items = fs.readdirSync(dir);
@@ -56,19 +53,22 @@ async function listFiles({ directory }) {
   console.log(`Found ${files.length} files`);
   return { files };
 }
-
 async function readFile({ file_path }) {
   const content = fs.readFileSync(file_path, "utf-8");
   console.log(`Reading: ${file_path}`);
   return { content };
 }
-
 async function writeFile({ file_path, content }) {
   fs.writeFileSync(file_path, content, "utf-8");
   console.log(`✍️  Fixed: ${file_path}`);
   return { success: true };
 }
+async function CreateReadme({ file_path, content }) {
+  fs.writeFile(file_path, content, "utf-8");
+  console.log("Create An Readme File Please Wait to Write Code ")
 
+  return { success: true };
+}
 // ============================================
 // TOOL REGISTRY
 // ============================================
@@ -77,6 +77,7 @@ const tools = {
   list_files: listFiles,
   read_file: readFile,
   write_file: writeFile,
+  Create_Readme: writeFile
 };
 
 // ============================================
@@ -131,13 +132,33 @@ const writeFileTool = {
     required: ["file_path", "content"],
   },
 };
+const createReadme = {
+  name: "Create_Readme",
+  description: "Please Wait We are Creating four read me file spo please wait",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      file_path: {
+        type: Type.STRING,
+        description: "Path to the file to write",
+      },
+      content: {
+        type: Type.STRING,
+        description: "The fixed/corrected content",
+      },
+    },
+    required: ["file_path", "content"],
+  },
+};
+
+
 
 // ============================================
 // MAIN FUNCTION
 // ============================================
 
 export async function runAgent(directoryPath) {
-  console.log(`🔍 Reviewing: ${directoryPath}\n`);
+  console.log(` Reviewing: ${directoryPath}\n`);
 
   const History = [
     {
@@ -150,7 +171,7 @@ export async function runAgent(directoryPath) {
 
   while (true) {
     const result = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: History,
       config: {
         systemInstruction: `You are an expert JavaScript code reviewer and fixer.
@@ -202,7 +223,7 @@ Files Fixed: Y
 Be practical and focus on real issues. Actually FIX the code, don't just report.`,
         tools: [
           {
-            functionDeclarations: [listFilesTool, readFileTool, writeFileTool],
+            functionDeclarations: [listFilesTool, readFileTool, writeFileTool, createReadme],
           },
         ],
       },
