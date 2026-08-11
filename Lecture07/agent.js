@@ -1,6 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import "dotenv/config";
-import fs, { Utf8Stream } from "fs";
+import fs from "fs";
 import path from "path";
 
 
@@ -63,11 +63,10 @@ async function writeFile({ file_path, content }) {
   console.log(`✍️  Fixed: ${file_path}`);
   return { success: true };
 }
-async function CreateReadme({ file_path, content }) {
-  fs.writeFile(file_path, content, "utf-8");
-  console.log("Create An Readme File Please Wait to Write Code ")
-
-  return { success: true };
+async function createReadmeFile({ file_path, content }) {
+  fs.writeFileSync(file_path, content, "utf-8");
+  console.log(`📄 README created: ${file_path}`);
+  return { success: true, file_path };
 }
 // ============================================
 // TOOL REGISTRY
@@ -77,7 +76,8 @@ const tools = {
   list_files: listFiles,
   read_file: readFile,
   write_file: writeFile,
-  Create_Readme: writeFile
+  create_readme: createReadmeFile,
+  Create_Readme: createReadmeFile,
 };
 
 // ============================================
@@ -132,19 +132,19 @@ const writeFileTool = {
     required: ["file_path", "content"],
   },
 };
-const createReadme = {
-  name: "Create_Readme",
-  description: "Please Wait We are Creating four read me file spo please wait",
+const createReadmeTool = {
+  name: "create_readme",
+  description: "Create a README file after the review is complete",
   parameters: {
     type: Type.OBJECT,
     properties: {
       file_path: {
         type: Type.STRING,
-        description: "Path to the file to write",
+        description: "Path to the README file",
       },
       content: {
         type: Type.STRING,
-        description: "The fixed/corrected content",
+        description: "The README content to write",
       },
     },
     required: ["file_path", "content"],
@@ -223,7 +223,7 @@ Files Fixed: Y
 Be practical and focus on real issues. Actually FIX the code, don't just report.`,
         tools: [
           {
-            functionDeclarations: [listFilesTool, readFileTool, writeFileTool, createReadme],
+            functionDeclarations: [listFilesTool, readFileTool, writeFileTool, createReadmeTool],
           },
         ],
       },
@@ -262,6 +262,18 @@ Be practical and focus on real issues. Actually FIX the code, don't just report.
       break;
     }
   }
+
+  const targetPath = path.join(path.resolve(directoryPath), "README.md");
+  const projectName = path.basename(path.resolve(directoryPath));
+  const filesResult = await listFiles({ directory: path.resolve(directoryPath) });
+  const fileList = filesResult.files
+    .map((file) => `- ${path.relative(path.resolve(directoryPath), file)}`)
+    .slice(0, 20)
+    .join("\n");
+
+  const readmeContent = `# ${projectName}\n\nThis project was reviewed and fixed by the AI agent.\n\n## What was done\n- Reviewed JavaScript, HTML, CSS, and TypeScript files\n- Fixed common bugs and code quality issues\n- Prepared a summary of the improvements\n\n## Files found\n${fileList || "- No files found"}\n`;
+
+  await createReadmeFile({ file_path: targetPath, content: readmeContent });
 }
 
 // node agent.js ../tester

@@ -6,9 +6,8 @@ let computerScore = 0;
 const playerScoreEl = document.getElementById("player-score");
 const computerScoreEl = document.getElementById("computer-score");
 const resultText = document.getElementById("result-message");
-const buttons = document.querySelectorAll(".choice-btns");
+const buttons = document.querySelectorAll(".choice-btn"); // FIX: Changed selector from .choice-btns to .choice-btn
 
-// NOTE: event listeners fail to attach because selector is wrong - this comment is inaccurate, the selector is correct. Issue is likely with HTML structure.
 buttons.forEach((button) => {
     button.addEventListener("click", () => {
         playRound(button.dataset.choice);
@@ -16,11 +15,9 @@ buttons.forEach((button) => {
 });
 
 function playRound(playerChoice) {
-    // random index calculation fixed to be within bounds
     const computerChoice = choices[Math.floor(Math.random() * choices.length)];
     const result = getResult(playerChoice, computerChoice);
 
-    // result check now expects "won" as returned by getResult
     if (result === "won") {
         playerScore += 1;
     } else if (result === "lose") {
@@ -29,7 +26,16 @@ function playRound(playerChoice) {
 
     playerScoreEl.textContent = playerScore;
     computerScoreEl.textContent = computerScore;
-    resultText.textContent = `You chose ${playerChoice}. Computer chose ${computerChoice}. ${result}`;
+
+    let message = `You chose ${playerChoice}. Computer chose ${computerChoice}. `;
+    if (result === "won") {
+        message += "You win!";
+    } else if (result === "lose") {
+        message += "You lose!";
+    } else {
+        message += "It's a tie!";
+    }
+    resultText.textContent = message; // FIX: More descriptive result message
 }
 
 function getResult(playerChoice, computerChoice) {
